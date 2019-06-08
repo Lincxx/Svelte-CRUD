@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import Postform from "../components/Postform.svelte";
 
+  let postLimit = 6;
+
   const apiBase = "https://ndb99xkpdk.execute-api.eu-west-2.amazonaws.com/dev";
   let posts = [];
   let editingPost = {
@@ -40,6 +42,22 @@
       postsUpdated.splice(index, 1, post);
       posts = postsUpdated;
     } else posts = [post, ...posts];
+
+    editingPost = {
+      body: "",
+      title: "",
+      id: null
+    };
+  }
+
+  function setLimit() {
+    fetch(`${apiBase}/posts/${postLimit}`)
+      .then(res => {
+        return res.json();
+      })
+      .then(postsData => {
+        posts = postsData;
+      });
   }
 </script>
 
@@ -61,6 +79,13 @@
 <div class="row">
   <div class="col s6">
     <Postform on:postCreated={addPost} {editingPost} />
+  </div>
+  <div class="col s3">
+    <p>Limit number of posts</p>
+    <input type="number" bind:value={postLimit} />
+    <button on:click={setLimit} class="waves-effect waves-light btn">
+      Set
+    </button>
   </div>
 </div>
 

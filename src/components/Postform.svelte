@@ -42,7 +42,7 @@
     const post = await res.json();
     dispatch("postCreated", post);
     //reset both at once
-    title = body = "";
+
     loading = false;
   }
 </script>
