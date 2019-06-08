@@ -15,7 +15,17 @@
   }
 
   function deletePost(id) {
-    console.log(`Deleting post with id ${id}`);
+    if (confirm("Are you sure")) {
+      fetch(`${apiBase}/post/${id}`, {
+        method: "DELETE"
+      })
+        .then(res => {
+          return res.json();
+        })
+        .then(() => {
+          posts = posts.filter(p => p.id !== id);
+        });
+    }
   }
 
   function addPost({ detail: post }) {
