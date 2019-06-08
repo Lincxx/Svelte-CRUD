@@ -4,6 +4,11 @@
 
   const apiBase = "https://ndb99xkpdk.execute-api.eu-west-2.amazonaws.com/dev";
   let posts = [];
+  let editingPost = {
+    body: "",
+    title: "",
+    id: null
+  };
 
   onMount(async () => {
     const res = await fetch(apiBase + "/posts");
@@ -11,7 +16,7 @@
   });
 
   function editPost(post) {
-    console.log(post);
+    editingPost = post;
   }
 
   function deletePost(id) {
@@ -29,7 +34,12 @@
   }
 
   function addPost({ detail: post }) {
-    posts = [post, ...posts];
+    if (posts.find(p => p.id === post.id)) {
+      const index = posts.findIndex(p => p.id === post.id);
+      let postsUpdated = posts;
+      postsUpdated.splice(index, 1, post);
+      posts = postsUpdated;
+    } else posts = [post, ...posts];
   }
 </script>
 
@@ -50,7 +60,7 @@
 
 <div class="row">
   <div class="col s6">
-    <Postform on:postCreated={addPost} />
+    <Postform on:postCreated={addPost} {editingPost} />
   </div>
 </div>
 
